@@ -1,0 +1,73 @@
+<div class="efile-ui-block">
+	<div class="efile-ui-block-header">
+		<div class="efile-ui-block-title">File Manager<div class="efile-ui-block-info">{{appData.fileManager.itemsTotal}}</div></div>
+	</div>
+	<div class="efile-ui-block-content">
+		<div class="efile-ui-filemanager">
+			<div class="efile-ui-breadcrumb">
+				<ul>
+					<li x-ng-repeat="item in appData.fileManager.path track by item.id">
+						<span x-ng-if="!$last"><a href="#" x-ng-click="appData.fileManager.fn.getFolderItemsBreadcrumb(appData, item);">{{ item.name }}</a><span class="efile-ui-breadcrumb-divider">/</span></span>
+						<span x-ng-if="$last">{{ item.name }}</span>
+					</li>
+				</ul>
+			</div>
+			<div class="efile-ui-toolbar">
+				<div class="efile-ui-toolbar-inner">
+					<div class="efile-ui-toolbar-left">
+						<div class="efile-ui-btn efile-ui-btn-create-folder" x-ng-click="appData.fileManager.fn.createFolderConfirm(appData);"><i class="fa fa-fw fa-plus"></i>Create Folder</div>
+						<div class="efile-ui-btn efile-ui-btn-upload-file" x-ng-click="appData.fileManager.fn.uploadFileConfirm(appData);"><i class="fa fa-fw fa-upload"></i>Upload File</div>
+					</div>
+					<div class="efile-ui-toolbar-right">
+						<div class="efile-ui-btn efile-ui-btn-paste" x-ng-class="{'efile-ui-hidden': !appData.fileManager.clipboard.items.length}" x-ng-click="appData.fileManager.fn.pasteItemsConfirm(appData);"><i class="fa fa-fw fa-clipboard"></i>Paste<div class="efile-ui-btn-info">{{ appData.fileManager.clipboard.items.length }}</div><div class="efile-ui-btn-info-bottom">{{ appData.fileManager.clipboard.operation }}</div></div>
+						<div class="efile-ui-btn efile-ui-btn-copy" x-ng-class="{'efile-ui-hidden': !appData.fileManager.fn.isSelected(appData) }" x-ng-click="appData.fileManager.fn.copyItems(appData);"><i class="fa fa-fw fa-files-o"></i>Copy<div class="efile-ui-btn-flag" x-ng-if="appData.fileManager.clipboard.operation == 'copy'"></div></div>
+						<div class="efile-ui-btn efile-ui-btn-cut" x-ng-class="{'efile-ui-hidden': !appData.fileManager.fn.isSelected(appData) }" x-ng-click="appData.fileManager.fn.cutItems(appData);"><i class="fa fa-fw fa-scissors"></i>Cut<div class="efile-ui-btn-flag" x-ng-if="appData.fileManager.clipboard.operation == 'cut'"></div></div>
+						<div class="efile-ui-btn efile-ui-btn-delete" x-ng-class="{'efile-ui-hidden': !appData.fileManager.fn.isSelected(appData) }" x-ng-click="appData.fileManager.fn.removeItemsConfirm(appData);"><i class="fa fa-fw fa-trash-o"></i>Delete</div>
+					</div>
+				</div>
+			</div>
+			<div class="efile-ui-files" x-ng-init="appData.fileManager.fn.itemsInit(appData);">
+				<table class="efile-ui-table" cellpadding="0" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th width="8"><input type="checkbox" class="efile-ui-select-all" x-ng-class="{'efile-ui-active': (appData.fileManager.selectedAll = appData.fileManager.fn.isSelectedAll(appData))}" x-ng-model="appData.fileManager.selectedAll" x-ng-change="appData.fileManager.fn.selectAll(appData);"></th>
+							<th width="8"></th>
+							<th>Title</th>
+							<th width="120">Size</th>
+							<th width="120">Date Created</th>
+							<th width="120">Date Updated</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr x-ng-repeat="item in appData.fileManager.items track by item.id" x-ng-dblclick="appData.fileManager.fn.selectRow(appData, item);">
+							<td><input type="checkbox" x-ng-model="item.selected"></td>
+							<td class="efile-ui-col-icon"><span class="efile-ui-icon {{ item.type=='folder' ? 'efile-ui-icon-folder' : 'efile-ui-icon-file' }}"></span></td>
+							<td class="efile-ui-col-title" x-ng-class="{'efile-ui-col-edit': item.tmpname }">
+								<a x-ng-if="item.type=='file'" href="{{ item.link + '/' + item.name }}" target="_blank" rel="nofollow">{{ item.name }}</a>
+								<a x-ng-if="item.type=='folder'" href="#" x-ng-click="appData.fileManager.fn.getFolderItems(appData, item);">{{ item.name }}</a>
+								<input type="text" x-ng-model="item.tmpname" x-press-enter="appData.fileManager.fn.renameItem(appData, item);" x-press-esc="appData.fileManager.fn.editItemClose(appData, item);">
+								<div class="efile-ui-row-toolbar">
+									<i x-ng-if="item.edit" class="efile-ui-row-btn fa fa-fw fa-floppy-o" x-ng-click="appData.fileManager.fn.renameItem(appData, item);"></i>
+									<i x-ng-if="!item.edit" class="efile-ui-row-btn fa fa-fw fa-pencil" x-ng-click="appData.fileManager.fn.editItemOpen(appData, item);"></i>
+									<i x-ng-if="item.edit" class="efile-ui-row-btn fa fa-fw fa-times" x-ng-click="appData.fileManager.fn.editItemClose(appData, item);"></i>
+								</div>
+							</td>
+							<td x-ng-if="item.type=='file'">{{ item.size | fileSize }}</td>
+							<td x-ng-if="item.type=='folder'"></td>
+							<td>{{ item.created_at | date:'dd.MM.yyyy hh:mm' }}</td>
+							<td>{{ item.updated_at | date:'dd.MM.yyyy hh:mm' }}</td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<ul class="efile-ui-pagination" x-ng-class="{'efile-ui-active': appData.fileManager.pages.length > 1 }">
+					<li><span x-ng-class="{'efile-ui-disabled': appData.fileManager.page <= 0}" x-ng-click="appData.fileManager.fn.getPrevPage(appData);"><i class="fa fa-angle-left">&nbsp;</i></span></li>
+					<li x-ng-repeat="page in appData.fileManager.pages">
+						<span x-ng-class="{'efile-ui-active': appData.fileManager.page == page - 1}" x-ng-click="appData.fileManager.fn.getPage(appData, page - 1);">{{ page }}</span>
+					</li>
+					<li><span x-ng-class="{'efile-ui-disabled': appData.fileManager.page >= appData.fileManager.pages.length - 1}" x-ng-click="appData.fileManager.fn.getNextPage(appData);"><i class="fa fa-angle-right">&nbsp;</i></span></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

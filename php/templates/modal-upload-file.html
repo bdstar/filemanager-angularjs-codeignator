@@ -1,0 +1,28 @@
+<div id="efile-ui-modal-{{ modalData.id }}" class="efile-ui-modal" tabindex="-1">
+	<div class="efile-ui-modal-dialog">
+		<div class="efile-ui-modal-header">
+			<div class="efile-ui-modal-close" x-ng-click="modalData.fn.close(modalData);">&times;</div>
+			<div class="efile-ui-modal-title">Upload files</div>
+		</div>
+		<div class="efile-ui-modal-data">
+			<div class="efile-ui-modal-label">Files will be uploaded to {{ modalData.path }}</div>
+			<div class="efile-ui-modal-btn efile-ui-modal-btn-select efile-ui-modal-btn-full-width" x-ngf-select="modalData.fn.select(modalData, $files)" x-ngf-multiple="true" x-ngf-keep="true">Select Files</div>
+			<div class="efile-ui-modal-file-list">
+				<div class="efile-ui-modal-file" x-ng-class="{'efile-ui-modal-file-error': file.error, 'efile-ui-modal-file-success': file.progress == 100}" x-ng-repeat="(index, file) in modalData.files">
+					<div class="efile-ui-modal-file-name">{{ file.name }}</div>
+					<div class="efile-ui-modal-file-size">{{ file.size | fileSize }}</div>
+					<div class="efile-ui-modal-file-close" x-ng-click="modalData.fn.remove(modalData, index);"><i class="fa fa-fw fa-times"></i></div>
+					<div x-ng-if="file.progress>0 && !file.error" class="efile-ui-modal-file-progress-wrap">
+						<div class="efile-ui-modal-file-progress">
+							<div class="efile-ui-modal-file-progress-bar" style="width: {{file.progress}}%">&nbsp;{{ file.progress }}%</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="efile-ui-modal-footer">
+			<button class="efile-ui-modal-btn efile-ui-modal-btn-close" x-ng-click="modalData.fn.close(modalData);">Close</button>
+			<button class="efile-ui-modal-btn efile-ui-modal-btn-create" x-ng-click="modalData.fn.upload(modalData);" x-ng-disabled="!modalData.files.length || modalData.inprocess">Upload</button>
+		</div>
+	</div>
+</div>

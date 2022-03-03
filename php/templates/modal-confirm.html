@@ -1,0 +1,15 @@
+<div id="efile-ui-modal-{{ modalData.id }}" class="efile-ui-modal" tabindex="-1">
+	<div class="efile-ui-modal-dialog">
+		<div class="efile-ui-modal-header">
+			<div class="efile-ui-modal-close" x-ng-click="modalData.deferred.resolve('close');">&times;</div>
+			<div class="efile-ui-modal-title">Confirm</div>
+		</div>
+		<div class="efile-ui-modal-data">
+			{{ modalData.content }}
+		</div>
+		<div class="efile-ui-modal-footer">
+			<div class="efile-ui-modal-btn efile-ui-modal-btn-close" x-ng-click="modalData.deferred.resolve('close');">Close</div>
+			<div class="efile-ui-modal-btn efile-ui-modal-btn-delete" x-ng-click="modalData.deferred.resolve(true);">OK</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,977 @@
+/*!
+// AngularJS & PHP File Manager
+// @author 
+// @site 
+// @copyright (c) 2022
+*/
+
+//===========================================
+// Variables
+//===========================================
+@font-family-base:Verdana, sans-serif;
+@font-family-title:Arial, sans-serif;
+@container-width:1024px;
+@container-login-width:460px;
+
+//===========================================
+// Colors
+//===========================================
+@color-bg:#fbfbfb;
+@color-text:#555;
+@color-white:#fff;
+@color-black:#000;
+@color-dark:#333;
+@color-blue:#03a9f4;
+@color-red:#d9534f;
+@color-gray:#ccc;
+@color-orange:#ee644a;
+@color-brown:#b8915a;
+@color-green:#25b89a;
+@color-pink:#ff526a;
+@color-light-yellow:#ffffd6;
+@color-light-gray:#ededed;
+@color-dark-gray:#2c2d2e;
+@color-dark-deep-blue:#363c42;
+
+//===========================================
+// Mixins
+//===========================================
+.shadow(@string) {
+	-webkit-box-shadow:@string;
+	box-shadow:@string;
+}
+.transition(@string) {
+	-webkit-transition:@string;
+	transition:@string;
+}
+.box-shadow(@string) {
+	-webkit-box-shadow: @string;
+	box-shadow: @string;
+}
+.shadow(@string) {
+	-webkit-box-shadow:@string;
+	box-shadow:@string;
+}
+.gradient(@startColor: #ebebeb, @endColor: #e2e2e2) {
+	background-color:@startColor;
+	background:-webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor));
+	background:-webkit-linear-gradient(top, @startColor, @endColor);
+}
+.transform(@string) {
+	-webkit-transform: @string;
+	transform: @string;
+}
+.transform-origin(@string) {
+	-webkit-transform-origin:@string;
+	transform-origin:@string;
+}
+.keyframes(@name; @arguments) {
+	@-webkit-keyframes @name { @arguments(); }
+	@keyframes @name { @arguments(); }
+}
+.animation(@string) {
+	-webkit-animation: @string;
+	animation: @string;
+}
+.hidden() {
+	opacity:0;
+	visibility:hidden;
+}
+.visible() {
+	opacity:1;
+	visibility:visible;
+}
+.noselect() {
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+	user-select:none;
+}
+.clearfix {
+	*zoom: 1;
+	&:before,
+	&:after {
+		display:table;
+		content:'';
+		// Fixes Opera/contenteditable bug:
+		// http://nicolasgallagher.com/micro-clearfix-hack/#comment-36952
+		line-height:0;
+	}
+	&:after {
+		clear:both;
+	}
+}
+.reset-text() {
+	font-family:@font-family-base;
+	// We deliberately do NOT reset font-size.
+	font-style:normal;
+	font-weight:normal;
+	letter-spacing:normal;
+	line-break:auto;
+	line-height:@line-height-base;
+	text-align:left; // Fallback for where `start` is not supported
+	text-align:start;
+	text-decoration:none;
+	text-shadow:none;
+	text-transform:none;
+	white-space:normal;
+	word-break:normal;
+	word-spacing:normal;
+	word-wrap:normal;
+}
+//===========================================
+// General
+//===========================================
+html,
+body {
+	position:relative;
+	margin:0;
+	padding:0;
+	min-width:@container-width;
+	height:100%;
+	font-family:@font-family-base;
+	font-size:12px;
+	background:@color-bg url('../images/bg.jpg');
+	color:@color-text;
+}
+body {
+	&.efile-ui-modal-open {
+		overflow:hidden;
+	}
+}
+//===========================================
+// UI
+//===========================================
+.efile-ui-loading {
+	display:none;
+	position:fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	background:transparent url('../images/linetile.png');
+	z-index:99999;
+	
+	&.efile-ui-active {
+		display:block;
+	}
+	
+	.efile-ui-loading-progress {
+		position:absolute;
+		top:0;
+		left:0;
+		right:0;
+		height:3px;
+		overflow: hidden;
+		
+		div {
+			position:absolute;
+			top:0;
+			left:0;
+			height:100%;
+			width:100%;
+		}
+		
+		div {
+			.animation(efile-ui-loading-progress 2s infinite backwards ease-out;);
+			.transform(scaleX(1));
+		}
+		
+		div:nth-child(1) {
+			animation-delay: -1.5s;
+		}
+		div:nth-child(2) {
+			animation-delay: -1s;
+		}
+		div:nth-child(3) {
+			animation-delay: -.5s;
+		}
+		div:nth-child(4) {
+			animation-delay: 0s;
+		}
+		
+		.efile-ui-loading-color-01 {
+			background-color: @color-blue;
+		}
+		.efile-ui-loading-color-02 {
+			background-color: darken(@color-blue,15%);
+		}
+		.efile-ui-loading-color-03 {
+			background-color: lighten(@color-blue,15%);
+		}
+		.efile-ui-loading-color-04 {
+			background-color: darken(@color-blue,15%);
+		}
+	}
+}
+.efile-ui-topbar {
+	background-color:@color-dark-gray;
+	
+	.efile-ui-topbar-inner {
+		position:relative;
+		margin:0 auto;
+		width:@container-width;
+	}
+	
+	.efile-ui-toolbar {
+		padding:5px 0;
+		text-align:right;
+		
+		&, a {
+			color:lighten(@color-text,15%);
+		}
+		
+		a:hover {
+			color:@color-white;
+		}
+	}
+	
+	.efile-ui-username {
+		text-transform:capitalize;
+	}
+}
+
+.efile-ui-header {
+	height:80px;
+	background-color:@color-dark-deep-blue;
+	
+	.efile-ui-header-inner {
+		width:@container-width;
+		height:100%;
+		margin:0 auto;
+		text-align:right;
+	}
+	
+	.efile-ui-logo {
+		display:inline-block;
+		float:left;
+		
+		a {
+			position:relative;
+			display:block;
+			width:300px;
+			height:60px;
+			text-decoration:none;
+			background-image:url('../images/logo.png');
+			background-repeat:no-repeat;
+			margin:10px 0;
+		}
+	}
+	
+	.efile-ui-menu {
+		display:inline-block;
+		margin:20px 0;
+		
+		.efile-ui-menu-item {
+			@string:color .15s ease,background .15s ease;
+			.transition(@string);
+			display:inline-block;
+			position:relative;
+			padding:7px 15px;
+			border:1px solid transparent;
+			border-radius:3px;
+			font-size:14px;
+			color:@color-white;
+			cursor:pointer;
+			
+			&:hover {
+				border-color:@color-white;
+			}
+			
+			&.efile-ui-active {
+				background:@color-blue;
+				border-color:@color-blue;
+			}
+		}
+	}
+}
+
+.efile-ui-data {
+	position:relative;
+	min-height:100%;
+
+	.efile-ui-data-inner {
+		position:relative;
+		margin:0 auto;
+		padding:15px 0;
+		width:@container-width;
+	}
+	
+	&.efile-ui-login {
+		.efile-ui-data-inner {
+			width:@container-login-width;
+		}
+	}
+	
+}
+
+.efile-ui-footer {
+	background-color:@color-dark-gray;
+	
+	.efile-ui-footer-inner {
+		position:relative;
+		margin:0 auto;
+		width:@container-width;
+	}
+	
+	.efile-ui-copyright {
+		padding:5px 0;
+		
+		&, a {
+			color:lighten(@color-text,15%);
+		}
+		
+		a:hover {
+			color:@color-white;
+		}
+	}
+}
+
+.efile-ui-block {
+	background:@color-white;
+	
+	.efile-ui-block-header {
+		position:relative;
+		height:52px;
+		line-height:52px;
+		background-color:@color-blue;
+		border-top-right-radius:3px;
+		border-top-left-radius:3px;
+		padding:0 15px;
+		
+		.efile-ui-block-title {
+			display:inline-block;
+			position:relative;
+			margin:0;
+			font-family:@font-family-title;
+			font-size:14px;
+			font-weight:bold;
+			text-transform:uppercase;
+			color:@color-white;
+		}
+		
+		.efile-ui-block-info {
+			position:absolute;
+			left:101%;
+			top:5px;
+			padding:2px 5px;
+			background-color:darken(@color-blue,15%);
+			color:@color-white;
+			border:1px solid @color-white;
+			font-size:10px;
+			line-height:1;
+			border-radius:10px;
+		}
+	}
+	
+	.efile-ui-block-content {
+		position:relative;
+		padding:15px;
+		border:1px solid @color-gray;
+		border-top-color:transparent;
+		box-sizing:border-box;
+		
+		a {
+			color:@color-blue;
+			text-decoration:none;
+			
+			&:hover {
+				color:@color-orange;
+			}
+		}
+	}
+	
+	//-------------------------------------------
+	// Login Form
+	//-------------------------------------------
+	.efile-ui-login-errors {
+		display:block;
+		margin:0 0 15px 0;
+		padding:0;
+		list-style:none;
+		
+		li {
+			padding:7px 15px;
+			background-color:@color-red;
+			color:@color-white;
+		}
+	}
+	
+	.efile-ui-login-form {
+		.efile-ui-login-label {
+			display:block;
+			width:100%;
+			margin-bottom:5px;
+		}
+		
+		.efile-ui-login-input {
+			outline:0;
+			width:100%;
+			padding:7px 15px;
+			margin-bottom:15px;
+			box-sizing:border-box;
+			border:1px solid @color-gray;
+			border-radius:3px;
+			font-size:14px;
+		}
+		
+		.efile-ui-login-btn {
+			display:inline-block;
+			padding:7px 15px;
+			border:1px solid transparent;
+			border-radius:3px;
+			background-color:@color-blue;
+			border-color:darken(@color-blue,15%);
+			color:@color-white;
+			cursor:pointer;
+			
+			&:hover {
+				background-color:darken(@color-blue,5%);
+			}
+		}
+	}
+	//-------------------------------------------
+	// Toolbar
+	//-------------------------------------------
+	.efile-ui-toolbar {
+		position:relative;
+		
+		.efile-ui-toolbar-inner {
+			display:table;
+			width:100%;
+		}
+		
+		.efile-ui-toolbar-left {
+			position:relative;
+			display:table-cell;
+			text-align:left;
+			vertical-align:top;
+		}
+		
+		.efile-ui-toolbar-right {
+			position:relative;
+			display:table-cell;
+			text-align:right;
+			vertical-align:top;
+			width:1%;
+			white-space:nowrap;
+		}
+		
+		.efile-ui-text {
+			width:99%;
+			padding:7px 15px;
+			border:1px solid @color-gray;
+			border-radius:3px;
+			box-sizing:border-box;
+		}
+		
+		.efile-ui-btn {
+			display:inline-block;
+			position:relative;
+			min-width:100px;
+			padding:7px 15px;
+			border:1px solid transparent;
+			border-radius:3px;
+			text-align:center;
+			color:@color-white;
+			cursor:pointer;
+			
+			i {
+				margin-right:3px;
+			}
+			
+			&.efile-ui-hidden {
+				display:none;
+			}
+			
+			&.efile-ui-btn-create-folder,
+			&.efile-ui-btn-upload-file {
+				background-color:@color-blue;
+				border-color:darken(@color-blue,15%);
+				
+				&:hover {
+					background-color:darken(@color-blue,5%);
+				}
+			}
+			
+			
+			&.efile-ui-btn-copy,
+			&.efile-ui-btn-cut {
+				min-width:50px;
+				background-color:@color-dark-gray;
+				border-color:darken(@color-dark-gray,15%);
+				
+				&:hover {
+					background-color:darken(@color-dark-gray,5%);
+				}
+			}
+			
+			&.efile-ui-btn-paste {
+				min-width:50px;
+				background-color:@color-brown;
+				border-color:darken(@color-brown,15%);
+				
+				&:hover {
+					background-color:darken(@color-brown,5%);
+				}
+			}
+			
+			&.efile-ui-btn-delete {
+				min-width:50px;
+				background-color:@color-red;
+				border-color:darken(@color-red,15%);
+				
+				&:hover {
+					background-color:darken(@color-red,5%);
+				}
+			}
+			
+			.efile-ui-btn-info,
+			.efile-ui-btn-info-bottom {
+				position:absolute;
+				border:1px solid transparent;
+				border-radius:10px;
+				color:@color-white;
+			}
+			
+			.efile-ui-btn-info {
+				top:-9px;
+				right:3px;
+				padding:2px 5px;
+				background-color:@color-dark-gray;
+				border-color:@color-white;
+				font-size:10px;
+				line-height:10px;
+			}
+			
+			.efile-ui-btn-info-bottom {
+				bottom:-6px;
+				left:3px;
+				padding:0 5px;
+				background-color:@color-brown;
+				border-color:darken(@color-brown,15%);
+				font-size:8px;
+				text-transform:uppercase;
+			}
+			
+			.efile-ui-btn-flag {
+				position:absolute;
+				top:3px;
+				right:5px;
+				width:5px;
+				height:5px;
+				background-color:@color-brown;
+				border-radius:50%;
+			}
+		}
+	}
+	//-------------------------------------------
+	// File Manager
+	//-------------------------------------------
+	.efile-ui-filemanager {
+		.efile-ui-breadcrumb {
+			margin-bottom:15px;
+			
+			ul {
+				padding:15px;
+				margin:0;
+				list-style:none;
+				background-color:darken(@color-white,5%);
+				
+				li {
+					display:inline-block;
+					text-transform:lowercase;
+					
+					&:first-child {
+						text-transform:capitalize;
+					}
+				}
+			}
+			
+			.efile-ui-breadcrumb-divider {
+				margin:0 5px;
+			}
+		}
+	
+		.efile-ui-files {
+			margin-top:15px;
+		}
+	}
+	//-------------------------------------------
+	// Icons
+	//-------------------------------------------
+	.efile-ui-icon {
+		display:inline-block;
+		margin:0;
+		width:24px;
+		height:24px;
+		
+		&.efile-ui-icon-folder {
+			background:transparent url('../images/folder.png') no-repeat;
+		}
+		
+		&.efile-ui-icon-file {
+			background:transparent url('../images/file.png') no-repeat;
+		}
+	}
+	//-------------------------------------------
+	// Table
+	//-------------------------------------------
+	.efile-ui-table {
+		& tr {
+			th, td {
+				border-bottom:1px solid @color-gray;
+				padding:10px 15px;
+				line-height:normal;
+				text-align:left;
+				
+				&.efile-ui-col-icon {
+					padding:10px 0;
+					text-align:center;
+				}
+				
+				&.efile-ui-col-title {
+					position:relative;
+					
+					
+					a {
+						top:2px;
+						display:inline-block;
+						max-width:400px;
+						white-space:nowrap;
+						overflow:hidden;
+						text-overflow:ellipsis;
+					}
+					input {
+						display:none;
+						padding:5px 15px;
+						width:100%;
+						box-sizing:border-box;
+						
+						
+					}
+					
+					&:hover {
+						input {
+							padding:5px 50px 5px 15px;
+						}
+					}
+				}
+				
+				&.efile-ui-col-edit {
+					padding:8px 15px;
+					
+					a {
+						display:none;
+					}
+					input {
+						display:inline-block;
+					}
+				}
+				
+			}
+			
+			&:nth-child(odd) td {
+				background-color:darken(@color-white,5%);
+			}
+			
+			td {
+				cursor:pointer;
+				
+				a {
+					position:relative;
+					display:block;
+				}
+			}
+			
+			.efile-ui-text-center {
+				text-align:center;
+			}
+			
+			&.efile-ui-active, &:hover {
+				td {
+					background:@color-light-yellow;
+				}
+				
+				.efile-ui-row-toolbar {
+					display:block;
+				}
+			}
+			
+			.efile-ui-row-toolbar {
+				display:none;
+				position:absolute;
+				right:20px;
+				top:15px;
+				font-size:14px;
+				
+				.efile-ui-row-btn {
+					&:hover {
+						color:@color-blue;
+					}
+				}
+			}
+		}
+	}
+	
+	//-------------------------------------------
+	// Pagination
+	//-------------------------------------------
+	.efile-ui-pagination {
+		.clearfix();
+		display:none;
+		padding:0;
+		margin:15px 0 0 0;
+		
+		&.efile-ui-active {
+			display:block;
+		}
+		
+		li {
+			display:inline;
+			
+			span {
+				position:relative;
+				float:left;
+				padding:5px 10px;
+				color:@color-blue;
+				background-color:@color-white;
+				border:1px solid darken(@color-gray, 15%);
+				margin-left:-1px;
+				cursor:pointer;
+				
+				&:hover,
+				&.efile-ui-active {
+					color:@color-white;
+					background-color:@color-blue;
+					border: 1px solid darken(@color-blue,15%);
+					z-index:1;
+				}
+				
+				&.efile-ui-active {
+					z-index:2;
+				}
+				
+				&.efile-ui-disabled {
+					&, &:hover {
+						color:@color-gray;
+						background-color:@color-white;
+						border:1px solid darken(@color-gray, 15%);
+						cursor:default;
+					}
+				}
+			}
+		}
+	}
+}
+
+//===========================================
+// Modal
+//===========================================
+.efile-ui-modals {
+	.efile-ui-modal {
+		position:fixed;
+		top:0;
+		left:0;
+		right:0;
+		bottom:0;
+		overflow-x:hidden;
+		overflow-y:scroll;
+		z-index:9999;
+		background:fade(@color-black,75%);
+		
+		.efile-ui-modal-dialog {
+			@shadow:0 3px 9px fade(@color-black,50%);
+			.shadow(@shadow);
+			position:relative;
+			width:98%;
+			max-width:600px;
+			margin:30px auto;
+			background-color:@color-white;
+		}
+		
+		.efile-ui-modal-header {
+			position:relative;
+			background:linear-gradient(to right bottom, @color-blue, @color-blue);
+			color:@color-white;
+			padding:15px;
+			
+		}
+		
+		.efile-ui-modal-close {
+			position:absolute;
+			right:10px;
+			top:9px;
+			background-color:transparent;
+			font-size:24px;
+			line-height:1;
+			color:fade(@color-white,90%);
+			cursor:pointer;
+			
+			&:hover {
+				color:@color-white;
+			}
+		}
+		
+		.efile-ui-modal-title {
+			font-size:14px;
+			font-weight:bold;
+		}
+		
+		.efile-ui-modal-data {
+			padding:25px 15px;
+		}
+		
+		.efile-ui-modal-group {
+			margin-top:15px;
+			text-align:center;
+			
+			&:first-child {
+				margin:0;
+			}
+		}
+		
+		.efile-ui-modal-label {
+			font-weight:bold;
+			margin-bottom:5px;
+		}
+		
+		.efile-ui-modal-btn {
+			display:inline-block;
+			position:relative;
+			min-width:100px;
+			padding:7px 15px;
+			margin:5px;
+			border:1px solid transparent;
+			border-radius:3px;
+			text-decoration:none;
+			text-align:center;
+			cursor:pointer;
+			background-color:@color-blue;
+			border-color:darken(@color-blue,15%);
+			color:@color-white;
+			
+			&[disabled] {
+				cursor:not-allowed;
+				opacity:0.6;
+			}
+			
+			&:hover {
+				background-color:darken(@color-blue,5%);
+			}
+			
+			&.efile-ui-modal-btn-select,
+			&.efile-ui-modal-btn-delete {
+				background-color:@color-blue;
+				border-color:darken(@color-blue,15%);
+				
+				&:hover {
+					background-color:darken(@color-blue,5%);
+				}
+			}
+			
+			&.efile-ui-modal-btn-close {
+				background-color:@color-dark;
+				border-color:darken(@color-dark,15%);
+				
+				&:hover {
+					background-color:darken(@color-dark,5%);
+				}
+			}
+			
+			&.efile-ui-modal-btn-full-width {
+				display:block;
+				margin:5px 0;
+			}
+		}
+		
+		.efile-ui-modal-file-list {
+			margin-top:15px;
+			
+			.efile-ui-modal-file {
+				position:relative;
+				padding:5px 15px;
+				margin-top:-1px;
+				border:1px solid darken(@color-gray,15%);
+			}
+			.efile-ui-modal-file-name {
+				font-size:14px;
+			}
+			.efile-ui-modal-file-size {
+				font-size:10px;
+				font-weight:bold;
+			}
+			.efile-ui-modal-file-close {
+				position:absolute;
+				top:2px;
+				right:2px;
+				width:16px;
+				height:16px;
+				line-height:16px;
+				border:1px solid transparent;
+				text-align:center;
+				cursor:pointer;
+				
+				&:hover {
+					background-color:@color-red;
+					color:@color-white;
+					border-color:darken(@color-red,15%);
+				}
+			}
+			
+			.efile-ui-modal-file-progress-wrap {
+				margin-top:15px;
+			}
+			.efile-ui-modal-file-progress {
+				position:relative;
+				height:15px;
+				margin-top:5px;
+				border:1px solid darken(@color-gray,15%);
+			}
+			.efile-ui-modal-file-progress-bar {
+				position:absolute;
+				top:-1px;
+				left:-1px;
+				width:50%;
+				height:100%;
+				background:@color-green;
+				border:1px solid darken(@color-green,15%);
+			}
+		}
+		
+		.efile-ui-modal-text {
+			padding:7px 15px;
+			border:1px solid @color-gray;
+			border-radius:3px;
+			box-sizing:border-box;
+		}
+		
+		.efile-ui-modal-long {
+			width:100%;
+		}
+		
+		.efile-ui-modal-footer {
+			position:relative;
+			padding:15px;
+			background-color:darken(@color-white,5%);
+			border-top:1px solid @color-gray;
+			text-align:right;
+			
+			.efile-ui-modal-btn {
+				margin:0;
+			}
+			
+			.efile-ui-modal-text {
+				float:left;
+			}
+		}
+	}
+}
+
+.keyframes(efile-ui-loading-progress; {
+	0%   { .transform(scaleX(0)); z-index: 15; }
+	22%  { .transform(scaleX(0)); z-index: 15; }
+	50%  { .transform(scaleX(1)); }
+	90%  { .transform(scaleX(1)); z-index: 1; }
+	100% { .transform(scaleX(1)); z-index: 0; }
+});

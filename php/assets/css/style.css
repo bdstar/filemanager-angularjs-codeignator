@@ -1,0 +1,776 @@
+/*!
+// AngularJS & PHP File Manager
+// @author 
+// @site 
+// @copyright (c) 2022
+*/
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: '';
+  line-height: 0;
+}
+.clearfix:after {
+  clear: both;
+}
+html,
+body {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  min-width: 1024px;
+  height: 100%;
+  font-family: Verdana, sans-serif;
+  font-size: 12px;
+  background: #fbfbfb url('../images/bg.jpg');
+  color: #555555;
+}
+body.efile-ui-modal-open {
+  overflow: hidden;
+}
+.efile-ui-loading {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: transparent url('../images/linetile.png');
+  z-index: 99999;
+}
+.efile-ui-loading.efile-ui-active {
+  display: block;
+}
+.efile-ui-loading .efile-ui-loading-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  overflow: hidden;
+}
+.efile-ui-loading .efile-ui-loading-progress div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+.efile-ui-loading .efile-ui-loading-progress div {
+  -webkit-animation: efile-ui-loading-progress 2s infinite backwards ease-out;
+  animation: efile-ui-loading-progress 2s infinite backwards ease-out;
+  -webkit-transform: scaleX(1);
+  transform: scaleX(1);
+}
+.efile-ui-loading .efile-ui-loading-progress div:nth-child(1) {
+  animation-delay: -1.5s;
+}
+.efile-ui-loading .efile-ui-loading-progress div:nth-child(2) {
+  animation-delay: -1s;
+}
+.efile-ui-loading .efile-ui-loading-progress div:nth-child(3) {
+  animation-delay: -0.5s;
+}
+.efile-ui-loading .efile-ui-loading-progress div:nth-child(4) {
+  animation-delay: 0s;
+}
+.efile-ui-loading .efile-ui-loading-progress .efile-ui-loading-color-01 {
+  background-color: #03a9f4;
+}
+.efile-ui-loading .efile-ui-loading-progress .efile-ui-loading-color-02 {
+  background-color: #0275a8;
+}
+.efile-ui-loading .efile-ui-loading-progress .efile-ui-loading-color-03 {
+  background-color: #47c4fd;
+}
+.efile-ui-loading .efile-ui-loading-progress .efile-ui-loading-color-04 {
+  background-color: #0275a8;
+}
+.efile-ui-topbar {
+  background-color: #2c2d2e;
+}
+.efile-ui-topbar .efile-ui-topbar-inner {
+  position: relative;
+  margin: 0 auto;
+  width: 1024px;
+}
+.efile-ui-topbar .efile-ui-toolbar {
+  padding: 5px 0;
+  text-align: right;
+}
+.efile-ui-topbar .efile-ui-toolbar,
+.efile-ui-topbar .efile-ui-toolbar a {
+  color: #7b7b7b;
+}
+.efile-ui-topbar .efile-ui-toolbar a:hover {
+  color: #ffffff;
+}
+.efile-ui-topbar .efile-ui-username {
+  text-transform: capitalize;
+}
+.efile-ui-header {
+  height: 80px;
+  background-color: #363c42;
+}
+.efile-ui-header .efile-ui-header-inner {
+  width: 1024px;
+  height: 100%;
+  margin: 0 auto;
+  text-align: right;
+}
+.efile-ui-header .efile-ui-logo {
+  display: inline-block;
+  float: left;
+}
+.efile-ui-header .efile-ui-logo a {
+  position: relative;
+  display: block;
+  width: 300px;
+  height: 60px;
+  text-decoration: none;
+  /*background-image: url('../images/logo.png');*/
+  background-repeat: no-repeat;
+  margin: 10px 0;
+}
+.efile-ui-header .efile-ui-menu {
+  display: inline-block;
+  margin: 20px 0;
+}
+.efile-ui-header .efile-ui-menu .efile-ui-menu-item {
+  -webkit-transition: color 0.15s ease, background 0.15s ease;
+  transition: color 0.15s ease, background 0.15s ease;
+  display: inline-block;
+  position: relative;
+  padding: 7px 15px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  font-size: 14px;
+  color: #ffffff;
+  cursor: pointer;
+}
+.efile-ui-header .efile-ui-menu .efile-ui-menu-item:hover {
+  border-color: #ffffff;
+}
+.efile-ui-header .efile-ui-menu .efile-ui-menu-item.efile-ui-active {
+  background: #03a9f4;
+  border-color: #03a9f4;
+}
+.efile-ui-data {
+  position: relative;
+  min-height: 100%;
+}
+.efile-ui-data .efile-ui-data-inner {
+  position: relative;
+  margin: 0 auto;
+  padding: 15px 0;
+  width: 1024px;
+}
+.efile-ui-data.efile-ui-login .efile-ui-data-inner {
+  width: 460px;
+}
+.efile-ui-footer {
+  background-color: #2c2d2e;
+}
+.efile-ui-footer .efile-ui-footer-inner {
+  position: relative;
+  margin: 0 auto;
+  width: 1024px;
+}
+.efile-ui-footer .efile-ui-copyright {
+  padding: 5px 0;
+}
+.efile-ui-footer .efile-ui-copyright,
+.efile-ui-footer .efile-ui-copyright a {
+  color: #7b7b7b;
+}
+.efile-ui-footer .efile-ui-copyright a:hover {
+  color: #ffffff;
+}
+.efile-ui-block {
+  background: #ffffff;
+}
+.efile-ui-block .efile-ui-block-header {
+  position: relative;
+  height: 52px;
+  line-height: 52px;
+  background-color: #03a9f4;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  padding: 0 15px;
+}
+.efile-ui-block .efile-ui-block-header .efile-ui-block-title {
+  display: inline-block;
+  position: relative;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.efile-ui-block .efile-ui-block-header .efile-ui-block-info {
+  position: absolute;
+  left: 101%;
+  top: 5px;
+  padding: 2px 5px;
+  background-color: #0275a8;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  font-size: 10px;
+  line-height: 1;
+  border-radius: 10px;
+}
+.efile-ui-block .efile-ui-block-content {
+  position: relative;
+  padding: 15px;
+  border: 1px solid #cccccc;
+  border-top-color: transparent;
+  box-sizing: border-box;
+}
+.efile-ui-block .efile-ui-block-content a {
+  color: #03a9f4;
+  text-decoration: none;
+}
+.efile-ui-block .efile-ui-block-content a:hover {
+  color: #ee644a;
+}
+.efile-ui-block .efile-ui-login-errors {
+  display: block;
+  margin: 0 0 15px 0;
+  padding: 0;
+  list-style: none;
+}
+.efile-ui-block .efile-ui-login-errors li {
+  padding: 7px 15px;
+  background-color: #d9534f;
+  color: #ffffff;
+}
+.efile-ui-block .efile-ui-login-form .efile-ui-login-label {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
+}
+.efile-ui-block .efile-ui-login-form .efile-ui-login-input {
+  outline: 0;
+  width: 100%;
+  padding: 7px 15px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  font-size: 14px;
+}
+.efile-ui-block .efile-ui-login-form .efile-ui-login-btn {
+  display: inline-block;
+  padding: 7px 15px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background-color: #03a9f4;
+  border-color: #0275a8;
+  color: #ffffff;
+  cursor: pointer;
+}
+.efile-ui-block .efile-ui-login-form .efile-ui-login-btn:hover {
+  background-color: #0398db;
+}
+.efile-ui-block .efile-ui-toolbar {
+  position: relative;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-toolbar-inner {
+  display: table;
+  width: 100%;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-toolbar-left {
+  position: relative;
+  display: table-cell;
+  text-align: left;
+  vertical-align: top;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-toolbar-right {
+  position: relative;
+  display: table-cell;
+  text-align: right;
+  vertical-align: top;
+  width: 1%;
+  white-space: nowrap;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-text {
+  width: 99%;
+  padding: 7px 15px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn {
+  display: inline-block;
+  position: relative;
+  min-width: 100px;
+  padding: 7px 15px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  text-align: center;
+  color: #ffffff;
+  cursor: pointer;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn i {
+  margin-right: 3px;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-hidden {
+  display: none;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-btn-create-folder,
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-btn-upload-file {
+  background-color: #03a9f4;
+  border-color: #0275a8;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-btn-create-folder:hover,
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-btn-upload-file:hover {
+  background-color: #0398db;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-btn-copy,
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-btn-cut {
+  min-width: 50px;
+  background-color: #2c2d2e;
+  border-color: #070707;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-btn-copy:hover,
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-btn-cut:hover {
+  background-color: #202021;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-btn-paste {
+  min-width: 50px;
+  background-color: #b8915a;
+  border-color: #8a693b;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-btn-paste:hover {
+  background-color: #ae854b;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-btn-delete {
+  min-width: 50px;
+  background-color: #d9534f;
+  border-color: #b52b27;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn.efile-ui-btn-delete:hover {
+  background-color: #d43f3a;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn .efile-ui-btn-info,
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn .efile-ui-btn-info-bottom {
+  position: absolute;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: #ffffff;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn .efile-ui-btn-info {
+  top: -9px;
+  right: 3px;
+  padding: 2px 5px;
+  background-color: #2c2d2e;
+  border-color: #ffffff;
+  font-size: 10px;
+  line-height: 10px;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn .efile-ui-btn-info-bottom {
+  bottom: -6px;
+  left: 3px;
+  padding: 0 5px;
+  background-color: #b8915a;
+  border-color: #8a693b;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+.efile-ui-block .efile-ui-toolbar .efile-ui-btn .efile-ui-btn-flag {
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  width: 5px;
+  height: 5px;
+  background-color: #b8915a;
+  border-radius: 50%;
+}
+.efile-ui-block .efile-ui-filemanager .efile-ui-breadcrumb {
+  margin-bottom: 15px;
+}
+.efile-ui-block .efile-ui-filemanager .efile-ui-breadcrumb ul {
+  padding: 15px;
+  margin: 0;
+  list-style: none;
+  background-color: #f2f2f2;
+}
+.efile-ui-block .efile-ui-filemanager .efile-ui-breadcrumb ul li {
+  display: inline-block;
+  text-transform: lowercase;
+}
+.efile-ui-block .efile-ui-filemanager .efile-ui-breadcrumb ul li:first-child {
+  text-transform: capitalize;
+}
+.efile-ui-block .efile-ui-filemanager .efile-ui-breadcrumb .efile-ui-breadcrumb-divider {
+  margin: 0 5px;
+}
+.efile-ui-block .efile-ui-filemanager .efile-ui-files {
+  margin-top: 15px;
+}
+.efile-ui-block .efile-ui-icon {
+  display: inline-block;
+  margin: 0;
+  width: 24px;
+  height: 24px;
+}
+.efile-ui-block .efile-ui-icon.efile-ui-icon-folder {
+  background: transparent url('../images/folder.png') no-repeat;
+}
+.efile-ui-block .efile-ui-icon.efile-ui-icon-file {
+  background: transparent url('../images/file.png') no-repeat;
+}
+.efile-ui-block .efile-ui-table tr th,
+.efile-ui-block .efile-ui-table tr td {
+  border-bottom: 1px solid #cccccc;
+  padding: 10px 15px;
+  line-height: normal;
+  text-align: left;
+}
+.efile-ui-block .efile-ui-table tr th.efile-ui-col-icon,
+.efile-ui-block .efile-ui-table tr td.efile-ui-col-icon {
+  padding: 10px 0;
+  text-align: center;
+}
+.efile-ui-block .efile-ui-table tr th.efile-ui-col-title,
+.efile-ui-block .efile-ui-table tr td.efile-ui-col-title {
+  position: relative;
+}
+.efile-ui-block .efile-ui-table tr th.efile-ui-col-title a,
+.efile-ui-block .efile-ui-table tr td.efile-ui-col-title a {
+  top: 2px;
+  display: inline-block;
+  max-width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.efile-ui-block .efile-ui-table tr th.efile-ui-col-title input,
+.efile-ui-block .efile-ui-table tr td.efile-ui-col-title input {
+  display: none;
+  padding: 5px 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.efile-ui-block .efile-ui-table tr th.efile-ui-col-title:hover input,
+.efile-ui-block .efile-ui-table tr td.efile-ui-col-title:hover input {
+  padding: 5px 50px 5px 15px;
+}
+.efile-ui-block .efile-ui-table tr th.efile-ui-col-edit,
+.efile-ui-block .efile-ui-table tr td.efile-ui-col-edit {
+  padding: 8px 15px;
+}
+.efile-ui-block .efile-ui-table tr th.efile-ui-col-edit a,
+.efile-ui-block .efile-ui-table tr td.efile-ui-col-edit a {
+  display: none;
+}
+.efile-ui-block .efile-ui-table tr th.efile-ui-col-edit input,
+.efile-ui-block .efile-ui-table tr td.efile-ui-col-edit input {
+  display: inline-block;
+}
+.efile-ui-block .efile-ui-table tr:nth-child(odd) td {
+  background-color: #f2f2f2;
+}
+.efile-ui-block .efile-ui-table tr td {
+  cursor: pointer;
+}
+.efile-ui-block .efile-ui-table tr td a {
+  position: relative;
+  display: block;
+}
+.efile-ui-block .efile-ui-table tr .efile-ui-text-center {
+  text-align: center;
+}
+.efile-ui-block .efile-ui-table tr.efile-ui-active td,
+.efile-ui-block .efile-ui-table tr:hover td {
+  background: #ffffd6;
+}
+.efile-ui-block .efile-ui-table tr.efile-ui-active .efile-ui-row-toolbar,
+.efile-ui-block .efile-ui-table tr:hover .efile-ui-row-toolbar {
+  display: block;
+}
+.efile-ui-block .efile-ui-table tr .efile-ui-row-toolbar {
+  display: none;
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 14px;
+}
+.efile-ui-block .efile-ui-table tr .efile-ui-row-toolbar .efile-ui-row-btn:hover {
+  color: #03a9f4;
+}
+.efile-ui-block .efile-ui-pagination {
+  *zoom: 1;
+  display: none;
+  padding: 0;
+  margin: 15px 0 0 0;
+}
+.efile-ui-block .efile-ui-pagination:before,
+.efile-ui-block .efile-ui-pagination:after {
+  display: table;
+  content: '';
+  line-height: 0;
+}
+.efile-ui-block .efile-ui-pagination:after {
+  clear: both;
+}
+.efile-ui-block .efile-ui-pagination.efile-ui-active {
+  display: block;
+}
+.efile-ui-block .efile-ui-pagination li {
+  display: inline;
+}
+.efile-ui-block .efile-ui-pagination li span {
+  position: relative;
+  float: left;
+  padding: 5px 10px;
+  color: #03a9f4;
+  background-color: #ffffff;
+  border: 1px solid #a6a6a6;
+  margin-left: -1px;
+  cursor: pointer;
+}
+.efile-ui-block .efile-ui-pagination li span:hover,
+.efile-ui-block .efile-ui-pagination li span.efile-ui-active {
+  color: #ffffff;
+  background-color: #03a9f4;
+  border: 1px solid #0275a8;
+  z-index: 1;
+}
+.efile-ui-block .efile-ui-pagination li span.efile-ui-active {
+  z-index: 2;
+}
+.efile-ui-block .efile-ui-pagination li span.efile-ui-disabled,
+.efile-ui-block .efile-ui-pagination li span.efile-ui-disabled:hover {
+  color: #cccccc;
+  background-color: #ffffff;
+  border: 1px solid #a6a6a6;
+  cursor: default;
+}
+.efile-ui-modals .efile-ui-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.75);
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-dialog {
+  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  position: relative;
+  width: 98%;
+  max-width: 600px;
+  margin: 30px auto;
+  background-color: #ffffff;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-header {
+  position: relative;
+  background: linear-gradient(to right bottom, #03a9f4, #03a9f4);
+  color: #ffffff;
+  padding: 15px;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-close {
+  position: absolute;
+  right: 10px;
+  top: 9px;
+  background-color: transparent;
+  font-size: 24px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-close:hover {
+  color: #ffffff;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-title {
+  font-size: 14px;
+  font-weight: bold;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-data {
+  padding: 25px 15px;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-group {
+  margin-top: 15px;
+  text-align: center;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-group:first-child {
+  margin: 0;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-btn {
+  display: inline-block;
+  position: relative;
+  min-width: 100px;
+  padding: 7px 15px;
+  margin: 5px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  background-color: #03a9f4;
+  border-color: #0275a8;
+  color: #ffffff;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-btn[disabled] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-btn:hover {
+  background-color: #0398db;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-btn.efile-ui-modal-btn-select,
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-btn.efile-ui-modal-btn-delete {
+  background-color: #03a9f4;
+  border-color: #0275a8;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-btn.efile-ui-modal-btn-select:hover,
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-btn.efile-ui-modal-btn-delete:hover {
+  background-color: #0398db;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-btn.efile-ui-modal-btn-close {
+  background-color: #333333;
+  border-color: #0d0d0d;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-btn.efile-ui-modal-btn-close:hover {
+  background-color: #262626;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-btn.efile-ui-modal-btn-full-width {
+  display: block;
+  margin: 5px 0;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-file-list {
+  margin-top: 15px;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-file-list .efile-ui-modal-file {
+  position: relative;
+  padding: 5px 15px;
+  margin-top: -1px;
+  border: 1px solid #a6a6a6;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-file-list .efile-ui-modal-file-name {
+  font-size: 14px;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-file-list .efile-ui-modal-file-size {
+  font-size: 10px;
+  font-weight: bold;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-file-list .efile-ui-modal-file-close {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  border: 1px solid transparent;
+  text-align: center;
+  cursor: pointer;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-file-list .efile-ui-modal-file-close:hover {
+  background-color: #d9534f;
+  color: #ffffff;
+  border-color: #b52b27;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-file-list .efile-ui-modal-file-progress-wrap {
+  margin-top: 15px;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-file-list .efile-ui-modal-file-progress {
+  position: relative;
+  height: 15px;
+  margin-top: 5px;
+  border: 1px solid #a6a6a6;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-file-list .efile-ui-modal-file-progress-bar {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 50%;
+  height: 100%;
+  background: #25b89a;
+  border: 1px solid #187865;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-text {
+  padding: 7px 15px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-long {
+  width: 100%;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-footer {
+  position: relative;
+  padding: 15px;
+  background-color: #f2f2f2;
+  border-top: 1px solid #cccccc;
+  text-align: right;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-footer .efile-ui-modal-btn {
+  margin: 0;
+}
+.efile-ui-modals .efile-ui-modal .efile-ui-modal-footer .efile-ui-modal-text {
+  float: left;
+}
+@-webkit-keyframes efile-ui-loading-progress {
+  0% {
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    z-index: 15;
+  }
+  22% {
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    z-index: 15;
+  }
+  50% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+  }
+  90% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+    z-index: 1;
+  }
+  100% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+    z-index: 0;
+  }
+}
+@keyframes efile-ui-loading-progress {
+  0% {
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    z-index: 15;
+  }
+  22% {
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    z-index: 15;
+  }
+  50% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+  }
+  90% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+    z-index: 1;
+  }
+  100% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+    z-index: 0;
+  }
+}

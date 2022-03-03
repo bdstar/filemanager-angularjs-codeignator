@@ -1,0 +1,16 @@
+<div id="efile-ui-modal-{{ modalData.id }}" class="efile-ui-modal" tabindex="-1">
+	<div class="efile-ui-modal-dialog">
+		<div class="efile-ui-modal-header">
+			<div class="efile-ui-modal-close" x-ng-click="modalData.deferred.resolve('close');">&times;</div>
+			<div class="efile-ui-modal-title">New folder</div>
+		</div>
+		<div class="efile-ui-modal-data">
+			<div class="efile-ui-modal-label">Folder name</div>
+			<input type="text" class="efile-ui-modal-text efile-ui-modal-long" x-ng-model="modalData.folderName">
+		</div>
+		<div class="efile-ui-modal-footer">
+			<div class="efile-ui-modal-btn efile-ui-modal-btn-close" x-ng-click="modalData.deferred.resolve('close');">Close</div>
+			<div class="efile-ui-modal-btn efile-ui-modal-btn-create" x-ng-click="modalData.deferred.resolve(true);">Create</div>
+		</div>
+	</div>
+</div>
