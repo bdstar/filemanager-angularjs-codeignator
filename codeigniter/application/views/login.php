@@ -8,7 +8,7 @@
 	<meta name="author" content="Max Lawrence">
 	<meta name="copyright" content="Avirtum">
 	<meta name="description" content="EasyFile is the angularjs and codeigniter powered script that lets you control your files and folders">
-	<title>EasyFile - CodeIgniter File Manager</title>
+	<title>AngularJS & CodeIgniter File Manager</title>
 	
 	<!-- css -->
 	<link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
@@ -37,18 +37,18 @@
 				<?php	echo validation_errors('<li>', '</li>'); ?>
 			</ul>
 			<?php } ?>
-<?php 
-	$attributes = array('class' => 'efile-ui-login-form');
-	echo form_open('loginverify', $attributes);
-?>
-	<label class="efile-ui-login-label">Username:</label>
-	<input class="efile-ui-login-input" name="username" type="text" />
-	<label class="efile-ui-login-label">Password:</label>
-	<input class="efile-ui-login-input" name="password" type="password" />
-	<input class="efile-ui-login-btn" type="submit" value="Submit" />
-<?php
-	echo form_close();
-?>
+			<?php 
+				$attributes = array('class' => 'efile-ui-login-form');
+				echo form_open('loginverify', $attributes);
+			?>
+				<label class="efile-ui-login-label">Username:</label>
+				<input class="efile-ui-login-input" name="username" type="text" />
+				<label class="efile-ui-login-label">Password:</label>
+				<input class="efile-ui-login-input" name="password" type="password" />
+				<input class="efile-ui-login-btn" type="submit" value="Submit" />
+			<?php
+				echo form_close();
+			?>
 			</div>
 		</div>
 	</div>

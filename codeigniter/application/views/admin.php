@@ -8,7 +8,7 @@
 	<meta name="author" content="Max Lawrence">
 	<meta name="copyright" content="Avirtum">
 	<meta name="description" content="EasyFile is the angularjs and codeigniter powered script that lets you control your files and folders">
-	<title>EasyFile - CodeIgniter File Manager</title>
+	<title>AngularJS & CodeIgniter File Manager</title>
 	
 	<!-- scripts -->
 	<script src="assets/js/lib/jquery.min.js"></script>
@@ -63,7 +63,7 @@
 
 <div class="efile-ui-footer">
 	<div class="efile-ui-footer-inner">
-		<div class="efile-ui-copyright">© 2016 <a href="http://avirtum.com">Avirtum</a>. All Rights Reserved.</div>
+		<div class="efile-ui-copyright">© 2016 All Rights Reserved.</div>
 	</div>
 </div>
 

@@ -134,7 +134,7 @@ body.efile-ui-modal-open {
   width: 300px;
   height: 60px;
   text-decoration: none;
-  background-image: url('../images/logo.png');
+  /*background-image: url('../images/logo.png');*/
   background-repeat: no-repeat;
   margin: 10px 0;
 }
