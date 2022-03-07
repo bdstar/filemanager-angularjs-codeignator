@@ -55,3 +55,4 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['templates/(:any)'] = 'templates/view/$1';
 $route['filemanager'] = 'filemanager/index';
+$route['video'] = 'video/index';
